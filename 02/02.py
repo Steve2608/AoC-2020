@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 import re
-from typing import List, NamedTuple
+from typing import List
 
 
-class Password(NamedTuple):
+@dataclass
+class Password:
     i1: int
     i2: int
     needle: str

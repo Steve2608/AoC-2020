@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re
-from typing import List
+from typing import Sequence
 
 
 @dataclass
@@ -16,11 +16,11 @@ class Password:
         return cls(int(match.group(1)), int(match.group(2)), match.group(3), match.group(4))
 
 
-def part1(data: List[Password]) -> int:
+def part1(data: Sequence[Password]) -> int:
     return sum(p.i1 <= p.haystack.count(p.needle) <= p.i2 for p in data)
 
 
-def part2(data: List[Password]) -> int:
+def part2(data: Sequence[Password]) -> int:
     return sum((p.haystack[p.i1 - 1] == p.needle) != (p.needle == p.haystack[p.i2 - 1]) for p in data)
 
 

@@ -1,13 +1,13 @@
-from typing import List
+from typing import Sequence
 
-def part1(data: List[int]) -> int:
+def part1(data: Sequence[int]) -> int:
     for a in data:
         for b in data:
             if a + b == 2020:
                 return a * b
 
 
-def part2(data: List[int]) -> int:
+def part2(data: Sequence[int]) -> int:
     for a in data:
         for b in data:
             if (part1 := a + b) >= 2020:

@@ -26,18 +26,18 @@ class Passport:
                     raise e
 
         try:
-            byr = search(r'byr:([^\s]+)')
-            iyr = search(r'iyr:([^\s]+)')
-            eyr = search(r'eyr:([^\s]+)')
-            hgt = search(r'hgt:([^\s]+)')
-            hcl = search(r'hcl:([^\s]+)')
-            ecl = search(r'ecl:([^\s]+)')
-            pid = search(r'pid:([^\s]+)')
+            byr = search(r'byr:(\S+)')
+            iyr = search(r'iyr:(\S+)')
+            eyr = search(r'eyr:(\S+)')
+            hgt = search(r'hgt:(\S+)')
+            hcl = search(r'hcl:(\S+)')
+            ecl = search(r'ecl:(\S+)')
+            pid = search(r'pid:(\S+)')
         except AttributeError:
             # one of the fields was not present
             return None
 
-        cid = search(r'cid:([^\s]+)', optional=True)
+        cid = search(r'cid:(\S+)', optional=True)
         try:
             return cls(byr, iyr, eyr, hgt, hcl, ecl, pid, cid)
         except ValueError as e:

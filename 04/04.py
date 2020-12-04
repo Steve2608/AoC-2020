@@ -37,7 +37,7 @@ class Passport:
             # one of the fields was not present
             return None
 
-        cid = search(r'cid:(\d+)', optional=True)
+        cid = search(r'cid:([^\s]+)', optional=True)
         try:
             return cls(byr, iyr, eyr, hgt, hcl, ecl, pid, cid)
         except ValueError as e:

@@ -60,7 +60,7 @@ class VerifiedPassport(Passport):
             raise ValueError(f'Invalid eyr: {eyr}')
         self.eyr = int(eyr)
 
-        if not re.fullmatch(r'\d+(cm|in)', hgt):
+        if not re.fullmatch(r'\d+(?:cm|in)', hgt):
             raise ValueError(f'Invalid height: {hgt}')
         if hgt.endswith('in') and not (59 <= int(hgt[:-2]) <= 76):
             raise ValueError(f'Invalid height in inches: {hgt}')

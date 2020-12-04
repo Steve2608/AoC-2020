@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re
-from typing import Any, Optional, Sequence
+from typing import Optional, Sequence
 
 
 @dataclass
@@ -12,11 +12,11 @@ class Passport:
     hcl: str
     ecl: str
     pid: str
-    cid: Optional[Any] = None
+    cid: Optional[str] = None
 
     @classmethod
     def from_string(cls, string: str) -> 'Password':
-        def search(pattern: str, optional: bool = False) -> Any:
+        def search(pattern: str, optional: bool = False) -> Optional[str]:
             try:
                 return re.search(pattern, string).group(1)
             except AttributeError as e:
@@ -47,7 +47,7 @@ class Passport:
 
 class VerifiedPassport(Passport):
 
-    def __init__(self, byr: str, iyr: str, eyr: str, hgt: str, hcl: str, ecl: str, pid: str, cid: Optional[Any] = None):
+    def __init__(self, byr: str, iyr: str, eyr: str, hgt: str, hcl: str, ecl: str, pid: str, cid: Optional[str] = None):
         if not re.fullmatch(r'\d{4}', byr) or not (1920 <= int(byr) <= 2002):
             raise ValueError(f'Invalid byr: {byr}')
         self.byr = int(byr)

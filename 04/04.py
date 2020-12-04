@@ -71,7 +71,7 @@ class VerifiedPassport(Passport):
             raise ValueError(f'Invalid unit for height: {hgt}')
         self.hgt = hgt
 
-        if not hcl.startswith('#') or len(hcl) != 7:
+        if not re.match(r'#[a-f0-9]{6}', hcl):
             raise ValueError(f'Invalid hcl: {hcl}')
         self.hcl = hcl
 

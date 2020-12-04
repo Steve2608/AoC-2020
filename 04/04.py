@@ -48,30 +48,27 @@ class Passport:
 class VerifiedPassport(Passport):
 
     def __init__(self, byr: str, iyr: str, eyr: str, hgt: str, hcl: str, ecl: str, pid: str, cid: Optional[Any] = None):
-        byr = int(byr)
-        if not (1920 <= byr <= 2002):
+        if not re.fullmatch(r'\d{4}', byr) or not (1920 <= int(byr) <= 2002):
             raise ValueError(f'Invalid byr: {byr}')
-        self.byr = byr
+        self.byr = int(byr)
         
-        iyr = int(iyr)
-        if not (2010 <= iyr <= 2020):
+        if not re.fullmatch(r'\d{4}', iyr) or not (2010 <= int(iyr) <= 2020):
             raise ValueError(f'Invalid iyr: {iyr}')
-        self.iyr = iyr
+        self.iyr = int(iyr)
 
-        eyr = int(eyr)
-        if not (2020 <= eyr <= 2030):
+        if not re.fullmatch(r'\d{4}', eyr) or not (2020 <= int(eyr) <= 2030):
             raise ValueError(f'Invalid eyr: {eyr}')
-        self.eyr = eyr
+        self.eyr = int(eyr)
 
-        if (end1 := hgt.endswith('in')) and not (59 <= int(hgt[:-2]) <= 76):
+        if not re.fullmatch(r'\d+(cm|in)', hgt):
+            raise ValueError(f'Invalid height: {hgt}')
+        if hgt.endswith('in') and not (59 <= int(hgt[:-2]) <= 76):
             raise ValueError(f'Invalid height in inches: {hgt}')
-        if (end2 := hgt.endswith('cm')) and not (150 <= int(hgt[:-2]) <= 193):
+        if hgt.endswith('cm') and not (150 <= int(hgt[:-2]) <= 193):
             raise ValueError(f'Invalid height in cm: {hgt}')
-        if not (end1 or end2):
-            raise ValueError(f'Invalid unit for height: {hgt}')
         self.hgt = hgt
 
-        if not re.match(r'#[a-f0-9]{6}', hcl):
+        if not re.fullmatch(r'#[a-f0-9]{6}', hcl):
             raise ValueError(f'Invalid hcl: {hcl}')
         self.hcl = hcl
 
@@ -79,7 +76,7 @@ class VerifiedPassport(Passport):
             raise ValueError(f'Invalid ecl: {ecl}')
         self.ecl = ecl
 
-        if not re.search(r'^\d{9}$', pid):
+        if not re.fullmatch(r'\d{9}', pid):
             raise ValueError(f'Invalid pid: {pid}')
         self.pid = int(pid)
 

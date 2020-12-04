@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional, Sequence
 
 
 @dataclass

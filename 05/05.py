@@ -29,10 +29,10 @@ def part1(data: Sequence[str]) -> int:
 
 
 def part2(data: Sequence[str]) -> int:
-    seats = sorted((Seat.from_string(line) for line in data), key=lambda s: s.seat)
+    seats = sorted(Seat.from_string(line).seat for line in data)
     for lower, upper in zip(seats[:-1], seats[1:]):
-        if lower.seat + 2 == upper.seat:
-            return lower.seat + 1
+        if lower + 2 == upper:
+            return lower + 1
 
 
 if __name__ == '__main__':

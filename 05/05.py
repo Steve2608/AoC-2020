@@ -37,7 +37,7 @@ def part2(data: Sequence[str]) -> int:
 
 if __name__ == '__main__':
     with open('05/input.txt', 'r') as in_file:
-        data = [line for line in in_file.read().splitlines()]
+        data = in_file.read().splitlines()
     
     print(part1(data))
     print(part2(data))

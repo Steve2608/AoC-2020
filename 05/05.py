@@ -1,23 +1,18 @@
+from dataclasses import dataclass
 import re
 from typing import Sequence
 
 
+@dataclass
 class Seat:
-    
+    seat: int
+    row: int
+    col: int
+
     def __init__(self, seat: int):
-        self._seat = seat
-
-    @property
-    def seat(self) -> int:
-        return self._seat
-
-    @property
-    def row(self) -> int:
-        return self.seat >> 3
-
-    @property
-    def col(self) -> int:
-        return self.seat & 0x7
+        self.seat = seat
+        self.row = seat >> 3
+        self.col = seat & 0x7
 
     @classmethod
     def from_string(cls, string: str) -> 'Seat':

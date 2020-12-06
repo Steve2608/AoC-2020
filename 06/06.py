@@ -6,8 +6,9 @@ def part1(data: Sequence[str]) -> int:
 
 
 def part2(data: Sequence[str]) -> int:
-    s = { chr(c) for c in range(ord('a'), ord('z') + 1) }
-    return sum(len(s.intersection(*(map(set, gr.split('\n'))))) for gr in data)
+    return sum(len(
+        set((g := gr.split('\n'))[0]).intersection(*g[1:]) if '\n' in gr else set(gr)
+    ) for gr in data)
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ def part2(data: Sequence[Password]) -> int:
 
 if __name__ == '__main__':
     with open('02/input.txt', 'r') as in_file:
-        data = [Password.from_string(line.replace('\n', '')) for line in in_file]
+        data = [Password.from_string(line.replace('\n', '')) for line in in_file.read().strip().splitlines()]
 
     print(part1(data))
     print(part2(data))

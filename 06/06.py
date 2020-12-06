@@ -12,7 +12,7 @@ def part2(data: Sequence[str]) -> int:
 
 if __name__ == '__main__':
     with open('06/input.txt', 'r') as in_file:
-        data = in_file.read().split('\n\n')
+        data = in_file.read().strip().split('\n\n')
     
     print(part1(data))
     print(part2(data))

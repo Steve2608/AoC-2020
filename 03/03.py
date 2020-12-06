@@ -25,7 +25,7 @@ def part2(data: Sequence[Sequence[bool]], directions: Sequence[Vector]) -> int:
 
 if __name__ == '__main__':
     with open('03/input.txt', 'r') as in_file:
-        data = [[ch == '#' for ch in line[:-1]] for line in in_file]
+        data = [[ch == '#' for ch in line] for line in in_file.read().strip().splitlines()]
 
     print(part1(data, Vector(3, 1)))
     print(part2(data, [Vector(1, 1), Vector(3, 1), Vector(5, 1), Vector(7, 1), Vector(1, 2)]))

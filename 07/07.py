@@ -8,7 +8,7 @@ def build_bags(data: Sequence[str]) -> Dict[str, Dict[str, int]]:
     return {re.match(container, s).group(1): { bag: int(n) for n, bag in re.findall(containees, s) } for s in data}
 
 
-def part1(data: Sequence[str], target: str ='shiny gold') -> int:
+def part1(data: Sequence[str], *, target: str ='shiny gold') -> int:
     bags = build_bags(data)
     containers, size = { target }, 0
 
@@ -19,7 +19,7 @@ def part1(data: Sequence[str], target: str ='shiny gold') -> int:
     return len(containers) - 1
 
 
-def part2(data: Sequence[str], target: str ='shiny gold') -> int:
+def part2(data: Sequence[str], *, target: str ='shiny gold') -> int:
     def count(bag: Dict[str, int]) -> int:
         return sum(n * (1 + count(bags[color])) for color, n in bag.items())
 

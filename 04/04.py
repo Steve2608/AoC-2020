@@ -47,7 +47,7 @@ class Passport:
 
 class VerifiedPassport(Passport):
 
-    def __init__(self, byr: str, iyr: str, eyr: str, hgt: str, hcl: str, ecl: str, pid: str, cid: Optional[str] = None):
+    def __init__(self, byr: str, iyr: str, eyr: str, hgt: str, hcl: str, ecl: str, pid: str, cid: Optional[str] = None, /):
         if not re.fullmatch(r'\d{4}', byr) or not (1920 <= int(byr) <= 2002):
             raise ValueError(f'Invalid byr: {byr}')
         self.byr = int(byr)

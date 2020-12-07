@@ -13,11 +13,14 @@ def build_bags(data: Sequence[str]) -> Dict[str, Dict[str, int]]:
 
 
 def part1(data: Sequence[str], target: str ='shiny gold') -> int:
-    def contain(target: str, key: str) -> int:
-        return target == key or any(contain(target, k) for k in bags[key])
-
     bags = build_bags(data)
-    return sum(contain(target, key) for key in bags if key != target)
+    containers, size = { target }, 0
+
+    # as long as no new solutions were found
+    while size != (size := len(containers)):
+        containers = containers.union({k for k, v in bags.items() if containers.intersection(v)})
+    # target does not contain itself
+    return len(containers) - 1
 
 
 def part2(data: Sequence[str], target: str ='shiny gold') -> int:

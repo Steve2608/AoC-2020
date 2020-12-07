@@ -1,5 +1,6 @@
 from typing import Sequence
 
+
 def part1(data: Sequence[int]) -> int:
     for a in data:
         for b in data:

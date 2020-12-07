@@ -5,11 +5,7 @@ from typing import Dict, Sequence
 def build_bags(data: Sequence[str]) -> Dict[str, Dict[str, int]]:
     container = r'(\w+ \w+) bags contain'
     containees = r'(?:(\d+) (\w+ \w+) bags?)+'
-    return {
-        re.match(container, s).group(1):
-        dict() if s.endswith('no other bags.') else { bag: int(n) for n, bag in re.findall(containees, s) }
-        for s in data
-    }
+    return {re.match(container, s).group(1): { bag: int(n) for n, bag in re.findall(containees, s) } for s in data}
 
 
 def part1(data: Sequence[str], target: str ='shiny gold') -> int:

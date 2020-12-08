@@ -1,8 +1,10 @@
 import re
-from typing import NamedTuple, Sequence, Set, Tuple
+import dataclasses
+from typing import List, Sequence, Set, Tuple
 
 
-class Instruction(NamedTuple):
+@dataclasses.dataclass
+class Instruction:
     op: str
     arg: int
 
@@ -13,9 +15,13 @@ class Instruction(NamedTuple):
             return Instruction('jmp', self.arg)
         return Instruction(self.op, self.arg)
 
+    @classmethod
+    def _from_parts(cls, parts: Tuple[str, str]) -> 'Instruction':
+        return cls(parts[0], int(parts[1]))
 
-def parse_instructions(data: str) -> Sequence[Instruction]:
-    return [Instruction(op, int(arg)) for op, arg in re.findall(r'(?:(acc|jmp|nop) ((?:\+|-)\d+))+', data)]
+    @classmethod
+    def parse_instructions(cls, data: str) -> List['Instruction']:
+        return list(map(cls._from_parts, re.findall(r'(?:(acc|jmp|nop) ((?:\+|-)\d+))+', data)))
 
 
 def execute(instructions: Sequence[Instruction]) -> Tuple[int, int, Set[int]]:
@@ -69,7 +75,7 @@ def part2(data: Sequence[Instruction]) -> int:
 
 if __name__ == '__main__':
     with open('08/input.txt', 'r') as in_file:
-        data = parse_instructions(in_file.read())
+        data = Instruction.parse_instructions(in_file.read())
     
     print(part1(data))
     print(part2(data))

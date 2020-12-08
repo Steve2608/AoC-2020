@@ -32,6 +32,24 @@ def execute(instructions: Sequence[Instruction]) -> Tuple[int, int, Set[int]]:
     return val, i, visited
 
 
+def execute_interruptable(instructions: Sequence[Instruction], *, idx: int, dead_code: Set[int]) -> Tuple[int, int, Set[int]]:
+    val, i, visited, max_idx = 0, 0, set(), len(instructions)
+
+    while (j := i) not in visited and i < max_idx:
+        instr = instructions[i]
+
+        i += instr.arg if instr.op == 'jmp' else 1
+        if j == idx and i in dead_code:
+            # after change i still points to code known to be dead -> abort
+            break
+
+        if instr.op == 'acc':
+            val += instr.arg
+        visited.add(j)
+    
+    return val, i, visited
+
+
 def part1(data: Sequence[Instruction]) -> int:
     return execute(data)[0]
 
@@ -40,10 +58,11 @@ def part2(data: Sequence[Instruction]) -> int:
     max_idx = len(data)
 
     # only test for jmp/nop
-    for i in filter(lambda i: data[i].op != 'acc', execute(data)[2]):
+    for i in filter(lambda i: data[i].op != 'acc', visited := execute(data)[2]):
         changed = data[:i] + [data[i].change()] + data[i + 1:]
         
-        val, j, _ = execute(changed)
+        # val, j, _ = execute(changed)
+        val, j, _ = execute_interruptable(changed, idx=i, dead_code=visited)
         if j >= max_idx:
             return val
 

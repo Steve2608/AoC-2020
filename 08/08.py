@@ -64,7 +64,7 @@ def part2(data: Sequence[Instruction]) -> int:
     max_idx = len(data)
 
     # only test for jmp/nop
-    for i in filter(lambda i: data[i].op != 'acc', visited := execute(data)[2]):
+    for i in filter(lambda i: data[i].op != 'acc', visited := frozenset(execute(data)[2])):
         changed = data[:i] + [data[i].change()] + data[i + 1:]
         
         # val, j, _ = execute(changed)

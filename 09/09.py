@@ -27,21 +27,21 @@ def part1(data: Sequence[int], *, preamble_length: int = 25) -> int:
 def part2(data: Sequence[int], *, preamble_length: int = 25) -> int:
     idx, target = find_weakness(data, preamble_length=preamble_length)
 
-    # sum (can be kept track of on the fly), right index
-    s, i = data[0], 1
-    curr = deque([s])
-    while i < idx:
+    # sum (can be kept track of on the fly), left index, right index
+    s, left, right, max_idx = data[0], 0, 1, len(data)
+    while right < max_idx:
         # add numbers from the right until >= target or out of numbers
-        while s < target and i < idx:
-            s += (add := data[i])
-            curr.appendleft(add)
-            i += 1
+        while s < target and right < max_idx:
+            s += data[right]
+            right += 1
 
         while s > target:
-            s -= curr.pop()
+            s -= data[left]
+            left += 1
 
         if s == target:
-            return min(curr) + max(curr)
+            window = data[left:right]
+            return min(window) + max(window)
     raise ValueError('No contiguous set found')
 
 

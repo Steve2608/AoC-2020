@@ -4,12 +4,8 @@ from typing import Sequence
 
 def sums_to(preamble: Sequence[int], *, target: int) -> bool:
     for i, pi in enumerate(preamble):
-        if pi >= target:
-            continue
         for j, pj in enumerate(preamble):
-            if i == j: 
-                continue
-            if pi + pj == target:
+            if i != j and pi + pj == target:
                 return True
     else:
         return False

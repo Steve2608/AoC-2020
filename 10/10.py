@@ -1,11 +1,9 @@
 from collections import defaultdict
-from typing import Sequence
+from typing import Iterable, Sequence
 
 
-def part1(data: Sequence[int]) -> int:
+def part1(data: Sequence[int], *, jolts: Iterable[int] = range(1, 4)) -> int:
     adapters, last = frozenset(data), max(data)
-
-    jolts = range(1, 4)
     counts = {i: 0 for i in jolts}
 
     # implicit 0 adapter
@@ -22,17 +20,17 @@ def part1(data: Sequence[int]) -> int:
     return counts[1] * (counts[3] + 1)
     
 
-def part2(data: Sequence[int]) -> int:
+def part2(data: Sequence[int], *, jolts: Iterable[int] = range(1, 4)) -> int:
     adapters = defaultdict(int)
     # implicit 0 adapter
     adapters[0] = 1
 
     for i in sorted(data):
-        adapters[i] = adapters[i - 3] + adapters[i - 2] + adapters[i - 1]
+        adapters[i] = sum(adapters[i - j] for j in jolts)
 
     # implicit +3 adapter
     last = max(data) + 3
-    return adapters[last - 3] + adapters[last - 2] + adapters[last - 1]
+    return sum(adapters[last - j] for j in jolts)
 
 
 if __name__ == '__main__':

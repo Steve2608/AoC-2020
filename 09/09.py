@@ -25,7 +25,7 @@ def part1(data: Sequence[int], *, preamble_length: int = 25) -> int:
 
 
 def part2(data: Sequence[int], *, preamble_length: int = 25) -> int:
-    idx, target = find_weakness(data, preamble_length=preamble_length)
+    target = find_weakness(data, preamble_length=preamble_length)[1]
 
     # sum (can be kept track of on the fly), left index, right index
     s, left, right, max_idx = data[0], 0, 1, len(data)

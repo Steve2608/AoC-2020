@@ -8,6 +8,7 @@ def part1(data: Sequence[int]) -> int:
     jolts = range(1, 4)
     counts = {i: 0 for i in jolts}
 
+    # implicit 0 adapter
     curr = 0    
     while curr < last:
         for i in jolts:
@@ -23,11 +24,13 @@ def part1(data: Sequence[int]) -> int:
 
 def part2(data: Sequence[int]) -> int:
     adapters = defaultdict(int)
+    # implicit 0 adapter
     adapters[0] = 1
 
     for i in sorted(data):
         adapters[i] = adapters[i - 3] + adapters[i - 2] + adapters[i - 1]
 
+    # implicit +3 adapter
     last = max(data) + 3
     return adapters[last - 3] + adapters[last - 2] + adapters[last - 1]
 

@@ -4,5 +4,8 @@
 # python cache
 **__pycache__**
 
+# java compiled files
+*.class
+
 # input files
 *input.txt

@@ -8,10 +8,11 @@ import java.util.StringJoiner;
 public class Day11 {
 
     public static void main(String[] args) throws IOException {
+        final char[][] seats = readData();
         // part1
-        System.out.println(convergenceSeats(new Seats(readData())));
+        System.out.println(convergenceSeats(new Seats(seats)));
         // part2
-        System.out.println(convergenceSeats(new VisibleSeats(readData())));
+        System.out.println(convergenceSeats(new VisibleSeats(seats)));
     }
 
     private static char[][] readData() throws IOException {

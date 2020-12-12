@@ -53,7 +53,7 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
             raise ValueError(f'Invalid direction: {d}')
 
     movement_options = frozenset('ESWNF')
-    directions, facing = ['E', 'S', 'W', 'N'], 'E'
+    directions, facing = 'ESWN', 'E'
     position = Vec2(0, 0)
     
     for d, l in data:

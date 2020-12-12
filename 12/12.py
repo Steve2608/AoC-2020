@@ -53,10 +53,9 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
             raise ValueError(f'Invalid direction: {d}')
 
     movement_options = frozenset('ESWNF')
-    directions = ['E', 'S', 'W', 'N']
+    directions, facing = ['E', 'S', 'W', 'N'], 'E'
     position = Vec2(0, 0)
     
-    facing = 'E'
     for d, l in data:
         if d in movement_options:
             position += move(d, facing, l)
@@ -74,7 +73,7 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
     return position.manhattan()
 
 
-def part2(data: Sequence[Tuple[str, int]]) -> int:
+def part2(data: Sequence[Tuple[str, int]], *, waypoint: Vec2 = Vec2(10, 1)) -> int:
     def move(direction: str, length: int) -> Vec2:
         if direction == 'E':
             return Vec2(length, 0)
@@ -87,12 +86,12 @@ def part2(data: Sequence[Tuple[str, int]]) -> int:
         else: 
             raise ValueError(f'Invalid direction: {d}')
 
-    movement_options = frozenset('ESWN')    
-    ship, waypoint = Vec2(0, 0), Vec2(10, 1)
+    allowed_directions = frozenset('ESWN')    
+    ship = Vec2(0, 0)
     for d, l in data:
         if d == 'F':
             ship += waypoint * l
-        elif d in movement_options:
+        elif d in allowed_directions:
             waypoint += move(d, l)
         elif d == 'R':
             waypoint >>= l

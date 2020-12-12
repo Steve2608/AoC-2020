@@ -18,7 +18,7 @@ class Vec2:
         return f'({self.x}, {self.y})'
 
     def __lshift__(self, amount: int) -> 'Vec2':
-        return self.__rshift__(360 - (amount % 360))
+        return self.__rshift__(-amount)
 
     def __rshift__(self, amount: int) -> 'Vec2':
         rotation = (amount % 360) // 90
@@ -54,6 +54,7 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
 
     movement_options = frozenset('ESWNF')
     directions, facing = 'ESWN', 'E'
+    len_dir = len(directions)
     position = Vec2(0, 0)
     
     for d, l in data:
@@ -62,13 +63,13 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
         else:
             # only account for right rotations
             if d == 'R':
-                rotation = (l % 360) // 90
+                rotation = l // 90
             elif d == 'L':
-                rotation = (360 - (l % 360)) // 90
+                rotation = -l // 90
             else:
                 raise ValueError(f'Invalid rotation: {d}')
         
-            facing = directions[(directions.index(facing) + rotation) % len(directions)]
+            facing = directions[(directions.index(facing) + rotation) % len_dir]
 
     return position.manhattan()
 

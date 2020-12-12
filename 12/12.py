@@ -105,7 +105,7 @@ def part2(data: Sequence[Tuple[str, int]], *, waypoint: Vec2 = Vec2(10, 1)) -> i
 
 if __name__ == '__main__':
     with open('12/input.txt', 'r') as in_file:
-        data = [(d, int(l)) for d, l in re.findall(r'(\w)(\d+)', in_file.read())]
+        data = [(d, int(l)) for d, l in re.findall(r'(F|E|S|W|N|R|L)(\d+)', in_file.read())]
 
     print(part1(data))
     print(part2(data))

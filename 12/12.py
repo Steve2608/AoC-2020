@@ -18,16 +18,7 @@ class Vec2:
         return f'({self.x}, {self.y})'
 
     def __lshift__(self, amount: int) -> 'Vec2':
-        rotation = (amount % 360) // 90
-        if not (1 <= rotation <= 3):
-            raise ValueError(f'Invalid rotation {amount}')
-
-        if rotation == 1:
-            return Vec2(-self.y, self.x)
-        elif rotation == 2:
-            return Vec2(-self.x, -self.y)
-        else:
-            return Vec2(self.y, -self.x)
+        return self.__rshift__(360 - (amount % 360))
 
     def __rshift__(self, amount: int) -> 'Vec2':
         rotation = (amount % 360) // 90

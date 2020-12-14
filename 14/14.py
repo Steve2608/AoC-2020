@@ -1,4 +1,5 @@
 import re
+from functools import partial
 from typing import Sequence, Union
 
 
@@ -7,8 +8,8 @@ def part1(data: Sequence[str]) -> int:
     for instr in data:
         if instr[:4] == 'mask':
             mask = instr[-36:]
-            mask_1 = int(mask.replace('X', '0'), base=2)
-            mask_0 = int(mask.replace('X', '1'), base=2)
+            mask_1 = int2(mask.replace('X', '0'))
+            mask_0 = int2(mask.replace('X', '1'))
         else:
             address, value = map(int, re.search(r'mem\[(\d+)\] = (\d+)', instr).groups())
             mem[address] = (value & mask_0) | mask_1
@@ -22,7 +23,7 @@ def floating_masks(mask: str) -> Sequence[int]:
         masks.extend(floating_masks(mask.replace('X', '1', 1)))
         return masks
     else:
-        return [int(mask, base=2)]
+        return [int2(mask)]
 
 
 def mem_adress(address: Union[int, str], mask: str) -> str:
@@ -48,5 +49,6 @@ if __name__ == '__main__':
     with open('14/input.txt', 'r') as in_file:
         data = in_file.read().strip().splitlines()
 
+    int2 = partial(int, base=2)
     print(part1(data))
     print(part2(data))

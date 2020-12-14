@@ -2,6 +2,8 @@ import re
 from functools import partial
 from typing import Sequence, Union
 
+int2 = partial(int, base=2)
+
 
 def part1(data: Sequence[str]) -> int:
     mem, mask_0, mask_1 = {}, 0, 0
@@ -49,6 +51,5 @@ if __name__ == '__main__':
     with open('14/input.txt', 'r') as in_file:
         data = in_file.read().strip().splitlines()
 
-    int2 = partial(int, base=2)
     print(part1(data))
     print(part2(data))

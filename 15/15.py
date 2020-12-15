@@ -3,24 +3,20 @@ from typing import Sequence
 
 
 def part1(data: Sequence[int], *, target: int = 2020):
-    memory = {number: i for i, number in enumerate(data, 1)}
+    memory = {number: (i, 0) for i, number in enumerate(data, 1)}
 
     prev = data[-1]
     for i in range(len(data) + 1, target + 1):
-        curr = memory[prev]
+        curr1, curr2 = memory[prev]
         
         # first mention
-        if type(curr) == int:
-            first = memory[(prev := 0)]
-            memory[prev] = (i, first) if type(first) == int else (i, first[0])
+        if curr2 == 0:
+            first = memory[(prev := 0)][0]
+            memory[prev] = i, first
         # 2nd+ mention
         else:
-            prev = curr[0] - curr[1]
-            if prev in memory:
-                second_plus = memory[prev]
-                memory[prev] = (i, second_plus) if type(second_plus) == int else (i, second_plus[0])
-            else:
-                memory[prev] = i
+            second_plus = memory.get(prev := curr1 - curr2, None)
+            memory[prev] = (i, second_plus[0]) if second_plus else (i, 0)
     return prev
 
 

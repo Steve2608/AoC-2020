@@ -1,4 +1,4 @@
-from functools import cached_property
+from functools import cached_property, partial
 from typing import Literal, Sequence, Union
 
 
@@ -113,15 +113,44 @@ def convergence_seats(prev: Union[Seats, VisibleSeats]):
 
     return curr.seats
 
+
 def part1(data: Sequence[Sequence[int]]) -> int:
     return convergence_seats(Seats(data))
 
 
 def part2(data: Sequence[Sequence[int]]) -> int:
     return convergence_seats(VisibleSeats(data))
+
+
+example1 = partial(convergence_seats, prev=Seats([list(line) for line in 
+r"""L.LL.LL.LL
+LLLLLLL.LL
+L.L.L..L..
+LLLL.LL.LL
+L.LL.LL.LL
+L.LLLLL.LL
+..L.L.....
+LLLLLLLLLL
+L.LLLLLL.L
+L.LLLLL.LL""".splitlines()]))
+
+example2 = partial(convergence_seats, prev=VisibleSeats([list(line) for line in 
+r"""L.LL.LL.LL
+LLLLLLL.LL
+L.L.L..L..
+LLLL.LL.LL
+L.LL.LL.LL
+L.LLLLL.LL
+..L.L.....
+LLLLLLLLLL
+L.LLLLLL.L
+L.LLLLL.LL""".splitlines()]))
     
 
 if __name__ == '__main__':
+    assert example1() == 37
+    assert example2() == 26
+
     with open('11/input.txt', 'r') as in_file:
         data = [list(line) for line in in_file.read().strip().splitlines()]
 

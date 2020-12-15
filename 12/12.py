@@ -1,4 +1,5 @@
 import re
+from functools import partial
 from typing import Sequence, Tuple
 
 
@@ -104,7 +105,19 @@ def part2(data: Sequence[Tuple[str, int]], *, waypoint: Vec2 = Vec2(10, 1)) -> i
     return ship.manhattan()
 
 
+example1 = partial(part1,
+    data=[(d, int(l)) for d, l in re.findall(r'(F|E|S|W|N|R|L)(\d+)', 'F10\nN3\nF7\nR90\nF11')]
+)
+example2 = partial(part2,
+    data=[(d, int(l)) for d, l in re.findall(r'(F|E|S|W|N|R|L)(\d+)', 'F10\nN3\nF7\nR90\nF11')],
+    waypoint=Vec2(10, 1)
+)
+
+
 if __name__ == '__main__':
+    assert example1() == 25
+    assert example2() == 286
+
     with open('12/input.txt', 'r') as in_file:
         data = [(d, int(l)) for d, l in re.findall(r'(F|E|S|W|N|R|L)(\d+)', in_file.read())]
 

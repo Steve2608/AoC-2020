@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from functools import partial
 from typing import Sequence
 
 
@@ -30,7 +31,12 @@ def part2(data: Sequence[str]) -> int:
             return lower + 1
 
 
+example1 = partial(part1, data=['FBFBBFFRLR'])
+
+
 if __name__ == '__main__':
+    assert example1() == 357
+    
     with open('05/input.txt', 'r') as in_file:
         data = in_file.read().strip().splitlines()
     

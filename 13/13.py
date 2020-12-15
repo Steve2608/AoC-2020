@@ -1,4 +1,5 @@
 import re
+from functools import partial
 from math import prod
 from typing import Optional, Sequence
 
@@ -36,7 +37,24 @@ def part2(busses: Sequence[Optional[int]]) -> int:
     return chinese_remainder_theorem(n, a)
 
 
+example1 = partial(part1, busses=[7, 13, 59, 31, 19], timestamp=939)
+example2 = partial(part2, busses=[7, 13, None, None, 59, None, 31, 19])
+example3 = partial(part2, busses=[17, None, 13, 19])
+example4 = partial(part2, busses=[67, 7, 59, 61])
+example5 = partial(part2, busses=[67, None, 7, 59, 61])
+example6 = partial(part2, busses=[67, 7, None, 59, 61])
+example7 = partial(part2, busses=[1789, 37, 47, 1889])
+
+
 if __name__ == '__main__':
+    assert example1() == 295
+    assert example2() == 1068781
+    assert example3() == 3417
+    assert example4() == 754018
+    assert example5() == 779210
+    assert example6() == 1261476
+    assert example7() == 1202161486
+
     with open('13/input.txt', 'r') as in_file:
         # first line
         timestamp = int(in_file.readline())

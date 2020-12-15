@@ -1,5 +1,6 @@
-import re
 import dataclasses
+import re
+from functools import partial
 from typing import List, Sequence, Set, Tuple
 
 
@@ -73,7 +74,31 @@ def part2(data: Sequence[Instruction]) -> int:
             return val
 
 
+example1 = partial(part1, data=Instruction.parse_instructions(r"""nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6"""))
+
+example2 = partial(part2, data=Instruction.parse_instructions(r"""nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6"""))
+
+
 if __name__ == '__main__':
+    assert example1() == 5
+    assert example2() == 8
+
     with open('08/input.txt', 'r') as in_file:
         data = Instruction.parse_instructions(in_file.read())
     

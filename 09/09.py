@@ -1,4 +1,5 @@
 from collections import deque
+from functools import partial
 from typing import Sequence
 
 
@@ -45,7 +46,20 @@ def part2(data: Sequence[int], *, preamble_length: int = 25) -> int:
     raise ValueError('No contiguous set found')
 
 
+example1 = partial(part1,
+    data=[35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576],
+    preamble_length=5
+)
+example2 = partial(part2,
+    data=[35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576],
+    preamble_length=5
+)
+
+
 if __name__ == '__main__':
+    assert example1() == 127
+    assert example2() == 62
+
     with open('09/input.txt', 'r') as in_file:
         data = list(map(int, in_file))
 

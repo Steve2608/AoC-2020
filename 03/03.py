@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import partial
 from math import prod
 from typing import Sequence
 
@@ -23,7 +24,40 @@ def part2(data: Sequence[Sequence[bool]], *, directions: Sequence[Vector]) -> in
     return prod(part1(data, direction=di) for di in directions)
 
 
+example1 = partial(part1, 
+    data=[[ch == '#' for ch in line] for line in r"""..##.......
+#...#...#..
+.#....#..#.
+..#.#...#.#
+.#...##..#.
+..#.##.....
+.#.#.#....#
+.#........#
+#.##...#...
+#...##....#
+.#..#...#.#""".splitlines()],
+    direction=Vector(3, 1)
+)
+example2 = partial(part2, 
+    data=[[ch == '#' for ch in line] for line in r"""..##.......
+#...#...#..
+.#....#..#.
+..#.#...#.#
+.#...##..#.
+..#.##.....
+.#.#.#....#
+.#........#
+#.##...#...
+#...##....#
+.#..#...#.#""".splitlines()],
+    directions=[Vector(1, 1), Vector(3, 1), Vector(5, 1), Vector(7, 1), Vector(1, 2)]
+)
+
+
 if __name__ == '__main__':
+    assert example1() == 7
+    assert example2() == 336
+
     with open('03/input.txt', 'r') as in_file:
         data = [[ch == '#' for ch in line] for line in in_file.read().strip().splitlines()]
 

@@ -47,7 +47,21 @@ def part2(data: Sequence[str]) -> int:
     return sum(mem.values())
 
 
+example1 = partial(part1, data=r"""mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+mem[8] = 11
+mem[7] = 101
+mem[8] = 0""".splitlines())
+
+example2 = partial(part2, data=r"""mask = 000000000000000000000000000000X1001X
+mem[42] = 100
+mask = 00000000000000000000000000000000X0XX
+mem[26] = 1""".splitlines())
+
+
 if __name__ == '__main__':
+    assert example1() == 165
+    assert example2() == 208
+    
     with open('14/input.txt', 'r') as in_file:
         data = in_file.read().strip().splitlines()
 

@@ -1,8 +1,8 @@
 from typing import Sequence
+from functools import partial
 
 
-
-def part1(data: Sequence[int], *, target: int = 2020):
+def memory_game(data: Sequence[int], target: int):
     memory = {number: (i, 0) for i, number in enumerate(data, 1)}
 
     prev = data[-1]
@@ -20,9 +20,13 @@ def part1(data: Sequence[int], *, target: int = 2020):
     return prev
 
 
+part1 = partial(memory_game, target=2020)
+part2 = partial(memory_game, target=30_000_000)
+
+
 if __name__ == '__main__':
     with open('15/input.txt', 'r') as in_file:
         data = list(map(int, in_file.read().strip().split(',')))
 
     print(part1(data))
-    print(part1(data, target=30_000_000))
+    print(part2(data))

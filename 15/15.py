@@ -1,23 +1,24 @@
 from typing import Sequence
 from functools import partial
+from collections import defaultdict
 
 
 def memory_game(data: Sequence[int], target: int):
-    memory = {number: (i, 0) for i, number in enumerate(data, 1)}
+    last = defaultdict(int)
+    for i, number in enumerate(data, 1):
+        last[number] = i
+    second_to_last = defaultdict(int)
 
-    prev = data[-1]
+    num = data[-1]
     for i in range(len(data) + 1, target + 1):
-        curr1, curr2 = memory[prev]
-        
-        # first mention
-        if curr2 == 0:
-            first = memory[(prev := 0)][0]
-            memory[prev] = i, first
-        # 2nd+ mention
+        if (stl := second_to_last[num]) == 0:
+            second_to_last[(num := 0)] = last[0]
         else:
-            second_plus = memory.get(prev := curr1 - curr2, None)
-            memory[prev] = (i, second_plus[0]) if second_plus else (i, 0)
-    return prev
+            second_to_last[num] = last[(num := last[num] - stl)]
+        last[num] = i
+
+    return num
+
 
 
 part1 = partial(memory_game, target=2020)

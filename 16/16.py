@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 from math import prod
 from typing import Dict, Sequence, Tuple
+from functools import partial
 
 
 def parse_inputs(data: str) -> Tuple[Dict[str, Tuple[range, range]], Sequence[Sequence[int]], Sequence[int]]:
@@ -68,7 +69,37 @@ def part2(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence
     return prod(ticket[i] for k, i in solutions.items() if k.startswith('departure'))
 
 
+example1 = partial(part1, 
+    constraints={
+        'class': (range(1, 4), range(5, 8)),
+        'row': (range(6, 12), range(33, 45)),
+        'seat': (range(13, 41), range(45, 51))
+    },
+    nearby=[
+        [ 7, 3, 47],
+        [40, 4, 50],
+        [55, 2, 20],
+        [38, 6, 12]
+    ]
+)
+example2 = partial(set_assignments,
+    constraints={
+        'class': (range(0, 2), range(4, 20)),
+        'row': (range(0, 6), range(8, 20)),
+        'seat': (range(0, 14), range(16, 20))
+    },
+    nearby=[
+        [ 3, 9, 18],
+        [15, 1,  5],
+        [ 5, 14, 9]
+    ]  
+)
+
+
 if __name__ == '__main__':
+    assert example1() == 71
+    assert example2() == { 'row': 0, 'class': 1, 'seat': 2 }
+
     with open('16/input.txt', 'r') as in_file:
         constraints, nearby, ticket = parse_inputs(in_file.read().strip())
     

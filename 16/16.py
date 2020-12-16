@@ -1,0 +1,76 @@
+import re
+from collections import defaultdict
+from math import prod
+from typing import Dict, Sequence, Tuple
+
+
+def parse_inputs(data: str) -> Tuple[Dict[str, Tuple[range, range]], Sequence[Sequence[int]], Sequence[int]]:
+    constraints = { name: (range(int(r1), int(r2) + 1), range(int(r3), int(r4) + 1))
+        for name, r1, r2, r3, r4 in re.findall(r'([\w ]+): (\d+)-(\d+) or (\d+)-(\d+)', data)
+    }
+    nearby = [list(map(int, line.split(','))) for line in re.search(r'nearby tickets:\s+([\d+,\s+]+)', data).group(1).splitlines()]
+    ticket = list(map(int, re.search(r'your ticket:\s+([\d+,]+)', data).group(1).split(',')))
+
+    return constraints, nearby, ticket
+
+
+def filter_invalid(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> Tuple[int, Sequence[Sequence[int]]]:
+    ranges = set()
+    for r1, r2 in constraints.values():
+        ranges = ranges.union(r1).union(r2)
+
+    return sum(sum(value for value in near if value not in ranges) for near in nearby), \
+        [near for near in nearby if all(value in ranges for value in near)]
+
+
+def set_assignments(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> Dict[str, int]:
+    def is_possible_column(ranges: Tuple[range, range], i: int) -> bool:
+        r = set(ranges[0]).union(ranges[1])
+        return all(near[i] in r for near in nearby)
+
+    nearby = filter_invalid(constraints, nearby)[1]
+    indices = len(constraints)
+
+    # calculating all valid assignments
+    valid_assignments = defaultdict(set)
+    for key, ranges in constraints.items():
+        for i in range(indices):
+            if is_possible_column(ranges, i):
+                valid_assignments[key].add(i)
+
+    solutions = {}
+    # one index is clear at a time
+    for _ in range(indices):
+        for key, assignments in valid_assignments.items():
+            # find obvious solution
+            if len(assignments) == 1:
+                solutions[key] = assign = assignments.pop()
+
+                # remove obvious solution from dictionary
+                del valid_assignments[key]
+
+                # remove assignment from all other keys
+                for v in valid_assignments.values():
+                    v.remove(assign)
+
+                # obvious index found, next iteration
+                break
+
+    return solutions
+
+
+def part1(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> int:
+    return filter_invalid(constraints, nearby)[0]
+
+
+def part2(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]], ticket: Sequence[int]) -> int:
+    solutions = set_assignments(constraints, nearby)
+    return prod(ticket[i] for k, i in solutions.items() if k.startswith('departure'))
+
+
+if __name__ == '__main__':
+    with open('16/input.txt', 'r') as in_file:
+        constraints, nearby, ticket = parse_inputs(in_file.read().strip())
+    
+    print(part1(constraints, nearby))
+    print(part2(constraints, nearby, ticket))

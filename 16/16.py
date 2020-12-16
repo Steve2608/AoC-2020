@@ -25,18 +25,15 @@ def filter_invalid(constraints: Dict[str, Tuple[range, range]], nearby: Sequence
 
 
 def set_assignments(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> Dict[str, int]:
-    def is_possible_column(ranges: Tuple[range, range], i: int) -> bool:
-        r = set(ranges[0]).union(ranges[1])
-        return all(near[i] in r for near in nearby)
-
     nearby = filter_invalid(constraints, nearby)[1]
     indices = len(constraints)
 
     # calculating all valid assignments
     valid_assignments = defaultdict(set)
     for key, ranges in constraints.items():
+        r = set(ranges[0]).union(ranges[1])
         for i in range(indices):
-            if is_possible_column(ranges, i):
+            if all(near[i] in r for near in nearby):
                 valid_assignments[key].add(i)
 
     solutions = {}

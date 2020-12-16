@@ -1,11 +1,11 @@
 import re
 from collections import defaultdict
 from math import prod
-from typing import Dict, Sequence, Tuple
+from typing import Sequence
 from functools import partial
 
 
-def parse_inputs(data: str) -> Tuple[Dict[str, Tuple[range, range]], Sequence[Sequence[int]], Sequence[int]]:
+def parse_inputs(data: str) -> tuple[dict[str, tuple[range, range]], Sequence[Sequence[int]], Sequence[int]]:
     constraints = { name: (range(int(r1), int(r2) + 1), range(int(r3), int(r4) + 1))
         for name, r1, r2, r3, r4 in re.findall(r'([\w ]+): (\d+)-(\d+) or (\d+)-(\d+)', data)
     }
@@ -15,7 +15,7 @@ def parse_inputs(data: str) -> Tuple[Dict[str, Tuple[range, range]], Sequence[Se
     return constraints, nearby, ticket
 
 
-def filter_invalid(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> Tuple[int, Sequence[Sequence[int]]]:
+def filter_invalid(constraints: dict[str, tuple[range, range]], nearby: Sequence[Sequence[int]]) -> tuple[int, Sequence[Sequence[int]]]:
     ranges = set()
     for r1, r2 in constraints.values():
         ranges = ranges.union(r1).union(r2)
@@ -24,8 +24,8 @@ def filter_invalid(constraints: Dict[str, Tuple[range, range]], nearby: Sequence
         [near for near in nearby if all(value in ranges for value in near)]
 
 
-def set_assignments(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> Dict[str, int]:
-    def is_possible_column(ranges: Tuple[range, range], i: int) -> bool:
+def set_assignments(constraints: dict[str, tuple[range, range]], nearby: Sequence[Sequence[int]]) -> dict[str, int]:
+    def is_possible_column(ranges: tuple[range, range], i: int) -> bool:
         r = set(ranges[0]).union(ranges[1])
         return all(near[i] in r for near in nearby)
 
@@ -60,11 +60,11 @@ def set_assignments(constraints: Dict[str, Tuple[range, range]], nearby: Sequenc
     return solutions
 
 
-def part1(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]]) -> int:
+def part1(constraints: dict[str, tuple[range, range]], nearby: Sequence[Sequence[int]]) -> int:
     return filter_invalid(constraints, nearby)[0]
 
 
-def part2(constraints: Dict[str, Tuple[range, range]], nearby: Sequence[Sequence[int]], ticket: Sequence[int]) -> int:
+def part2(constraints: dict[str, tuple[range, range]], nearby: Sequence[Sequence[int]], ticket: Sequence[int]) -> int:
     solutions = set_assignments(constraints, nearby)
     return prod(ticket[i] for k, i in solutions.items() if k.startswith('departure'))
 

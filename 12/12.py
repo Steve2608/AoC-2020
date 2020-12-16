@@ -1,6 +1,6 @@
 import re
 from functools import partial
-from typing import Sequence, Tuple
+from typing import Sequence
 
 
 class Vec2:
@@ -37,7 +37,7 @@ class Vec2:
         return abs(self.x) + abs(self.y)
 
 
-def part1(data: Sequence[Tuple[str, int]]) -> int:
+def part1(data: Sequence[tuple[str, int]]) -> int:
     def move(direction: str, facing: str, length: int) -> Vec2:
         if direction == 'F':
             direction = facing
@@ -75,7 +75,7 @@ def part1(data: Sequence[Tuple[str, int]]) -> int:
     return position.manhattan()
 
 
-def part2(data: Sequence[Tuple[str, int]], *, waypoint: Vec2 = Vec2(10, 1)) -> int:
+def part2(data: Sequence[tuple[str, int]], *, waypoint: Vec2 = Vec2(10, 1)) -> int:
     def move(direction: str, length: int) -> Vec2:
         if direction == 'E':
             return Vec2(length, 0)

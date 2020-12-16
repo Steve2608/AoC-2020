@@ -1,7 +1,7 @@
 import dataclasses
 import re
 from functools import partial
-from typing import List, Sequence, Set, Tuple
+from typing import Sequence
 
 
 @dataclasses.dataclass
@@ -17,15 +17,15 @@ class Instruction:
         return Instruction(self.op, self.arg)
 
     @classmethod
-    def _from_parts(cls, parts: Tuple[str, str]) -> 'Instruction':
+    def _from_parts(cls, parts: tuple[str, str]) -> 'Instruction':
         return cls(parts[0], int(parts[1]))
 
     @classmethod
-    def parse_instructions(cls, data: str) -> List['Instruction']:
+    def parse_instructions(cls, data: str) -> list['Instruction']:
         return list(map(cls._from_parts, re.findall(r'(?:(acc|jmp|nop) ((?:\+|-)\d+))+', data)))
 
 
-def execute(instructions: Sequence[Instruction]) -> Tuple[int, int, Set[int]]:
+def execute(instructions: Sequence[Instruction]) -> tuple[int, int, set[int]]:
     val, i, visited, max_idx = 0, 0, set(), len(instructions)
 
     while i not in visited and i < max_idx:
@@ -39,7 +39,7 @@ def execute(instructions: Sequence[Instruction]) -> Tuple[int, int, Set[int]]:
     return val, i, visited
 
 
-def execute_interruptable(instructions: Sequence[Instruction], *, idx: int, dead_code: Set[int]) -> Tuple[int, int, Set[int]]:
+def execute_interruptable(instructions: Sequence[Instruction], *, idx: int, dead_code: set[int]) -> tuple[int, int, set[int]]:
     val, i, visited, max_idx = 0, 0, set(), len(instructions)
 
     while (j := i) not in visited and i < max_idx:

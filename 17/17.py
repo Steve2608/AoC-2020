@@ -3,13 +3,10 @@ from itertools import product as carthesian_product
 
 
 def parse_active(data: str, *, dims: int) -> set[tuple[int, ...]]:
-    parsed = [[char == '#' for char in line] for line in data.splitlines()]
-    d = [0] * (dims - 2)
-
-    result = set()
-    for i_y, x in enumerate(parsed):
+    result, d = set(), [0] * (dims - 2)
+    for i_y, x in enumerate(data.splitlines()):
         for i_x, e in enumerate(x):
-            if e:
+            if e == '#':
                 result.add((i_x, i_y, *d))
     return frozenset(result)
 
@@ -44,23 +41,23 @@ def simulate_cycles(pd: PocketDimension, *, cycles: int) -> int:
     return len(pd._active)
 
 
-example1 = partial(simulate_cycles, 
+example1 = partial(simulate_cycles,
     pd=PocketDimension(parse_active('.#.\n..#\n###', dims=3), dims=3),
     cycles=0
 )
-example2 = partial(simulate_cycles, 
+example2 = partial(simulate_cycles,
     pd=PocketDimension(parse_active('.#.\n..#\n###', dims=3), dims=3),
     cycles=1
 )
-example3 = partial(simulate_cycles, 
+example3 = partial(simulate_cycles,
     pd=PocketDimension(parse_active('.#.\n..#\n###', dims=3), dims=3),
     cycles=2
 )
-example4 = partial(simulate_cycles, 
+example4 = partial(simulate_cycles,
     pd=PocketDimension(parse_active('.#.\n..#\n###', dims=3), dims=3),
     cycles=3
 )
-example5 = partial(simulate_cycles, 
+example5 = partial(simulate_cycles,
     pd=PocketDimension(parse_active('.#.\n..#\n###', dims=3), dims=3),
     cycles=6
 )

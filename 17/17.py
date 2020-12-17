@@ -10,7 +10,7 @@ def parse_active(data: str, *, dims: int) -> set[tuple[int, ...]]:
     for i_y, x in enumerate(parsed):
         for i_x, e in enumerate(x):
             if e:
-                result.add((*d, i_x, i_y))
+                result.add((i_x, i_y, *d))
     return frozenset(result)
 
 

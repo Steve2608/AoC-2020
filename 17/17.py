@@ -37,14 +37,11 @@ class PocketDimension:
             for delta in self._deltas if any(d != 0 for d in delta)
         )
 
-    def __len__(self) -> int:
-        return len(self._active)
-
 
 def simulate_cycles(pd: PocketDimension, *, cycles: int) -> int:
     for _ in range(cycles):
         pd = pd.next_gen()
-    return len(pd)
+    return len(pd._active)
 
 
 example1 = partial(simulate_cycles, 

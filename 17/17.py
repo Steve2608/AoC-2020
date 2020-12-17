@@ -17,6 +17,8 @@ class PocketDimension:
         self._active = active
         self._dims = dims
         self._deltas = list(carthesian_product(*([(-1, 0, 1)] * self._dims)))
+        # remove 0-delta
+        self._deltas.remove(tuple([0] * self._dims))
 
     def next_gen(self) -> 'PocketDimension':
         candidates = set()
@@ -29,10 +31,7 @@ class PocketDimension:
         ), dims=self._dims)
 
     def _neighbors(self, coord: tuple[int, ...]) -> int:
-        return sum(
-            tuple(c + d for c, d in zip(coord, delta)) in self._active
-            for delta in self._deltas if any(d != 0 for d in delta)
-        )
+        return sum(tuple(c + d for c, d in zip(coord, delta)) in self._active for delta in self._deltas)
 
 
 def simulate_cycles(pd: PocketDimension, *, cycles: int) -> int:

@@ -10,7 +10,7 @@ class Parser:
         self.rules = rules
 
     def parse(self, sentence: str) -> bool:
-        def match(rule: Union[str, list[int], tuple[list[int], list[int]]]) -> bool:
+        def match(rule: Union[str, list[int], tuple[list[int], ...]]) -> bool:
             #print(f'Testing rule={rule} at index={self.curr} with string={sentence[self.curr:]}')
             if self.curr >= len(sentence):
                 return False
@@ -30,17 +30,13 @@ class Parser:
                         self.curr = prev
                         return False
                 else:
-                    left, right = rule
-                    if all(match(self.rules[r]) for r in left):
-                        return True
+                    for subrule in rule:
+                        if all(match(self.rules[r]) for r in subrule):
+                            return True
+                        else:
+                            self.curr = prev
+                    return False
                         
-                    self.curr = prev
-                    if all(match(self.rules[r]) for r in right):
-                        return True
-                    else:
-                        self.curr = prev
-                        return False
-
         self.curr = 0
         return match(self.rules[0]) and self.curr == len(sentence)
 

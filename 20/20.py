@@ -5,10 +5,12 @@ from math import prod
 
 def rotate_flip(data: Union[str, list[list[str]]], *, right_rotations: int = 0, flip: bool = False, 
                 to_string: bool = False) -> Union[str, list[list[str]]]:
-    if type(data) == str:
-        data = [list(line) for line in data.splitlines()]
-    for _ in range(right_rotations % 4):
-        data = list(zip(*data[::-1]))
+    # only when data is actually changed
+    if right_rotations != 0 or flip:
+        if type(data) == str:
+            data = [list(line) for line in data.splitlines()]
+        for _ in range(right_rotations % 4):
+            data = list(zip(*data[::-1]))
     if to_string:
         return '\n'.join(''.join(char for char in (line if not flip else reversed(line))) for line in data)
     else:
@@ -19,11 +21,12 @@ class Tile:
 
     def __init__(self, number: int, data: str, size: int):
         self._number = number
+        self._flip = False
+        self._facing = 0
+
         self._data = [list(line[1:-1]) for line in data.splitlines()]
         del self._data[0]
         del self._data[-1]
-        self._flip = False
-        self._facing = 0
 
         self._edges = [
             data[:size],
@@ -49,7 +52,6 @@ class Tile:
             self._edges[1][::-1],
             self._edges[2]
         ]
-
 
     def flip(self):
         self._flip = ~self._flip
@@ -114,7 +116,7 @@ class Grid:
         else: 
             raise IndexError(f'{x, y} out of bounds for {self.x, self.y}')
 
-    def try_set(self, x: int, y: int, value: Tile) -> bool:
+    def _try_set(self, x: int, y: int, value: Tile) -> bool:
         if 0 <= x < self.x and 0 <= y < self.y:
             #if (up := self[x, y + 1]) is not None and up.bottom != value.top:
             #    return False
@@ -131,7 +133,6 @@ class Grid:
 
     def tile(self, tiles: set[Tile]) -> int:
         def insert(x: int, y: int, tiles: set[Tile]) -> bool:
-            # print(f'x={x}, y={y}, tiles={tiles}\n{self}\n')
             if not tiles:
                 return True
 
@@ -139,7 +140,7 @@ class Grid:
                 subset = tiles.difference({tile})
                 for _ in range(2):
                     for _ in range(4):
-                        if self.try_set(x, y, tile) and insert((x + 1) % self.x, y + ((x + 1) // self.x), subset):
+                        if self._try_set(x, y, tile) and insert((x + 1) % self.x, y + ((x + 1) // self.x), subset):
                             return True
                         tile.rotate()
                     tile.flip()
@@ -148,43 +149,50 @@ class Grid:
             return False
 
         insert(0, 0, tiles)
-        # print(self)
-        return prod(target.number for target in [self[0, 0], self[self.x - 1, 0], self[0, self.y - 1], self[self.x - 1, self.y - 1]])
+        return self[0, 0].number * self[self.x - 1, 0].number * \
+                self[0, self.y - 1].number * self[self.x - 1, self.y - 1].number
 
+    @property
     def image(self) -> str:
         s = ''
         for y in range(self.y):
-            for i in range(len(self[0, y].data.splitlines())):
+            cache = { x: self[x, y].data.splitlines() for x in range(self.x) }
+            for i in range(max_i := len(cache[0])):
                 for x in range(self.x):
-                    s += self[x, y].data.splitlines()[i]
+                    s += cache[x][max_i - (i + 1)]
                 s += '\n'
         return s
     
     def __str__(self):
-        return '\n'.join(map(str, reversed(self._tiles)))
+        return '\n'.join(map(str, self._tiles))
 
 
-def find_seamonsters(data: str, sea_monster: str = r"""                  # 
+def count_waves_monsters(data: str, sea_monster: str = r"""                  # 
 #    ##    ##    ###
- #  #  #  #  #  #   """) -> int:
-    mapper = lambda char: char == '#'
+ #  #  #  #  #  #   """) -> tuple[int, int]:
+    monster_one_line = list(map(lambda c: c == '#', sea_monster.replace('\n', '')))
+    y_span = sea_monster.count('\n') + 1
+    x_span = len(monster_one_line) // y_span
 
-    lines = sea_monster.count('\n') + 1
-    sea_monster_one = list(map(mapper, sea_monster.replace('\n', '')))
-    smol = len(sea_monster_one) // lines
-
-    count = 0
+    n_monsters = 0
     for flip in (False, True):
         for rotate in (0, 1, 2, 3):
-            rf_data = rotate_flip([list(line) for line in data.splitlines()], right_rotations=rotate, flip=flip, to_string=True)
-            rf_lines = rf_data.splitlines()
-            max_j, max_i = len(rf_lines) - lines, len(rf_lines[0]) - smol
-            for j in range(max_j):
-                for i in range(max_i):
-                    target = list(map(mapper, rf_lines[j][i:i+smol] + rf_lines[j+1][i:i+smol] + rf_lines[j+2][i:i+smol]))
-                    if target == sea_monster_one:
-                        count += 1
-    return count
+            rf_lines = rotate_flip(data, right_rotations=rotate, flip=flip, to_string=True).splitlines()
+            for y in range(len(rf_lines) - y_span):
+                for x in range(len(rf_lines[0]) - x_span):
+                    target = rf_lines[y][x:x+x_span] + rf_lines[y+1][x:x+x_span] + rf_lines[y+2][x:x+x_span]
+                    if all(t == '#' for t, s in zip(target, monster_one_line) if s):
+                        n_monsters += 1
+            # monsters only are in ONE orientation
+            if n_monsters != 0:
+                return data.count('#') - sum(monster_one_line) * n_monsters, n_monsters
+    return -1, -1
+
+
+def count_waves(data: str, sea_monster: str = r"""                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   """) -> int:
+    return count_waves_monsters(data, sea_monster)[0]
 
 
 def example1():
@@ -193,30 +201,31 @@ def example1():
 
 
 def example2():
-    g = Grid(x=3, y=3)
+    gr = Grid(x=3, y=3)
     with open('20/example1.txt', 'r') as in_file, open('20/example2.txt', 'r') as target_file:
-        g.tile(set(map(Tile.from_string, in_file.read().strip().split('\n\n'))))
-        target = target_file.read()
+        gr.tile(set(map(Tile.from_string, in_file.read().strip().split('\n\n'))))
+        expected = target_file.read().strip()
     
-    print(g)
-    print(g[0, 0].data, g[1, 0].data, g[2, 0].data, sep='\n\n', end='\n\n')
+    matched_once = False
     for flip in (False, True):
         for rotate in (0, 1, 2, 3):
-            actual = rotate_flip(g.image(), right_rotations=rotate, flip=flip, to_string=True)
-            print(actual, end='\n\n')
-            if actual == target:
-                print('True')
-    return find_seamonsters(g.image())
+            if rotate_flip(gr.image, right_rotations=rotate, flip=flip, to_string=True) == expected:
+                matched_once = True
+                break
+        if matched_once:
+            break
+    
+    assert matched_once
+    return count_waves_monsters(gr.image)
 
 
 if __name__ == '__main__':
     assert example1() == 20899048083289
-    assert example2() == 2
+    assert example2() == (273, 2)
 
     with open('20/input.txt', 'r') as in_file:
         tiles = set(map(Tile.from_string, in_file.read().strip().split('\n\n')))
 
     g = Grid(x=12, y=12)
     print(g.tile(tiles))
-    image = g.image()
-    print(find_seamonsters(image))
+    print(count_waves(g.image))

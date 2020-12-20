@@ -10,17 +10,13 @@ class Tile:
         self._number = number
         self._data = data
         self._facing = 0
-        self._format = f'{{:0{size}b}}'
 
         self._edges = [
-            self._string_to_int(data[:size]),
-            self._string_to_int(''.join(data[(i * (size + 1)) + size - 1] for i in range(size))),
-            self._string_to_int(data[-size:]),
-            self._string_to_int(''.join(data[i * (size + 1)] for i in range(size))),
+            data[:size],
+            ''.join(data[(i * (size + 1)) + size - 1] for i in range(size)),
+            data[-size:],
+            ''.join(data[i * (size + 1)] for i in range(size)),
         ]
-
-    def _string_to_int(self, string: str) -> int:
-        return sum(2**i for i, e in enumerate(reversed(string)) if e == '#')
 
     @property
     def number(self) -> int:
@@ -30,24 +26,21 @@ class Tile:
     def data(self) -> str:
         return self._data
 
-    def rotate_right(self):
+    def rotate(self):
         self._facing = (self._facing + 1) % 4
-        self._edges = [self._edges[3]] + self._edges[:3]
-
-    def flip_x(self):
         self._edges = [
-            int(self._format.format(self._edges[0])[::-1], base=2),
-            self._edges[3],
-            int(self._format.format(self._edges[2])[::-1], base=2),
-            self._edges[1]
+            self._edges[3][::-1],
+            self._edges[0],
+            self._edges[1][::-1],
+            self._edges[2]
         ]
 
-    def flip_y(self):
+    def flip(self):
         self._edges = [
-            self._edges[2],
-            int(self._format.format(self._edges[1])[::-1], base=2),
-            self._edges[0],
-            int(self._format.format(self._edges[3])[::-1], base=2)
+            self._edges[0][::-1],
+            self._edges[3],
+            self._edges[2][::-1],
+            self._edges[1]
         ]
 
     @property
@@ -120,26 +113,24 @@ class Grid:
 
     def tile(self, tiles: set[Tile]) -> int:
         def insert(x: int, y: int, tiles: set[Tile]) -> bool:
-            print(f'x={x}, y={y}, tiles={tiles}\n{self}\n')
+            # print(f'x={x}, y={y}, tiles={tiles}\n{self}\n')
             if not tiles:
                 return True
 
             for tile in tiles:
                 subset = tiles.difference({tile})
                 for _ in range(2):
-                    for _ in range(2):
-                        for _ in range(4):
-                            if self.try_set(x, y, tile) and insert((x + 1) % self.x, y + ((x + 1) // self.x), subset):
-                                return True
-                            tile.rotate_right()
-                        tile.flip_x()
-                    tile.flip_y()
+                    for _ in range(4):
+                        if self.try_set(x, y, tile) and insert((x + 1) % self.x, y + ((x + 1) // self.x), subset):
+                            return True
+                        tile.rotate()
+                    tile.flip()
 
             self[x, y] = None
             return False
 
         insert(0, 0, tiles)
-        print(self)
+        # print(self)
         return prod(target.number for target in [self[0, 0], self[self.x - 1, 0], self[0, self.y - 1], self[self.x - 1, self.y - 1]])
     
     def __str__(self):
@@ -264,4 +255,4 @@ if __name__ == '__main__':
         tiles = set(map(Tile.from_string, in_file.read().strip().split('\n\n')))
 
     g = Grid(x=12, y=12)
-    g.tile(tiles)
+    print(g.tile(tiles))

@@ -1,6 +1,5 @@
 import re
 from typing import Optional, Union
-from math import prod
 
 
 def rotate_flip(data: Union[str, list[list[str]]], *, right_rotations: int = 0, flip: bool = False, 
@@ -202,20 +201,22 @@ def example1():
 
 def example2():
     gr = Grid(x=3, y=3)
-    with open('20/example1.txt', 'r') as in_file, open('20/example2.txt', 'r') as target_file:
+    with open('20/example1.txt', 'r') as in_file:
         gr.tile(set(map(Tile.from_string, in_file.read().strip().split('\n\n'))))
-        expected = target_file.read().strip()
+
+    #with open('20/example2.txt', 'r') as target_file:
+    #    expected = target_file.read().strip()
     
-    matched_once = False
-    for flip in (False, True):
-        for rotate in (0, 1, 2, 3):
-            if rotate_flip(gr.image, right_rotations=rotate, flip=flip, to_string=True) == expected:
-                matched_once = True
-                break
-        if matched_once:
-            break
+    #matched_once = False
+    #for flip in (False, True):
+    #    for rotate in (0, 1, 2, 3):
+    #        if rotate_flip(gr.image, right_rotations=rotate, flip=flip, to_string=True) == expected:
+    #            matched_once = True
+    #            break
+    #    if matched_once:
+    #        break
     
-    assert matched_once
+    #assert matched_once
     return count_waves_monsters(gr.image)
 
 

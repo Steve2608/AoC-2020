@@ -6,39 +6,26 @@ from functools import partial
 class Parser:
 
     def __init__(self, rules: dict[int, Union[str, list[int], tuple[list[int], list[int]]]]):
-        self.curr = 0
         self.rules = rules
 
     def parse(self, sentence: str) -> bool:
-        def match(rule: Union[str, list[int], tuple[list[int], ...]]) -> bool:
-            #print(f'Testing rule={rule} at index={self.curr} with string={sentence[self.curr:]}')
-            if self.curr >= len(sentence):
-                return False
+        def match(rule: Union[str, list[int], tuple[list[int], ...]], sentence: str) -> set[str]:
+            # string already consumed
+            if not sentence:
+                return set()
             
-            typ = type(rule)
-            if typ == str:
-                if (comparison := sentence[self.curr] == rule):
-                    self.curr += 1
-                return comparison
+            if (typ := type(rule)) == str:
+                return {sentence.removeprefix(rule)} if sentence.startswith(rule) else set()
+            elif typ == list:
+                possibs = {sentence}
+                for r in rule:
+                    possibs = set().union(*[match(self.rules[r], p) for p in possibs])
+                return possibs                        
             else:
-                prev = self.curr
+                return set().union(*[match(branch, sentence) for branch in rule])
 
-                if typ == list:
-                    if all(match(self.rules[r]) for r in rule):
-                        return True
-                    else:
-                        self.curr = prev
-                        return False
-                else:
-                    for subrule in rule:
-                        if all(match(self.rules[r]) for r in subrule):
-                            return True
-                        else:
-                            self.curr = prev
-                    return False
-                        
-        self.curr = 0
-        return match(self.rules[0]) and self.curr == len(sentence)
+        # one of the possibilities eventually leads to match             
+        return '' in match(self.rules[0], sentence)
 
     @classmethod
     def from_string(cls, rules: str) -> 'Parser':

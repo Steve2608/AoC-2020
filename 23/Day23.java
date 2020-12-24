@@ -9,7 +9,7 @@ public class Day23 {
         assert "67384529".equals(part1(new int[] { 3, 8, 9, 1, 2, 5, 4, 6, 7 }, 100));
 
         assert 149245887792L == part2(new int[] { 3, 8, 9, 1, 2, 5, 4, 6, 7 }, 10_000_000);
-        
+
         System.out.println(part1(new int[] { 6, 5, 3, 4, 2, 7, 9, 1, 8 }, 100));
         System.out.println(part2(new int[] { 6, 5, 3, 4, 2, 7, 9, 1, 8 }, 10_000_000));
     }

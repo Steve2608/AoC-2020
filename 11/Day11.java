@@ -31,7 +31,7 @@ public class Day11 {
     private static int convergenceSeats(final Seats s) {
         Seats prev = s, curr = s.nextGen();
 
-        while(!prev.equals(curr)) {
+        while (!prev.equals(curr)) {
             prev = curr;
             curr = curr.nextGen();
         }

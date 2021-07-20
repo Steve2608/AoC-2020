@@ -18,7 +18,7 @@ class PocketDimension:
         self._dims = dims
         self._deltas = list(carthesian_product(*([(-1, 0, 1)] * self._dims)))
         # remove 0-delta
-        self._deltas.remove(tuple([0] * self._dims))
+        self._deltas.remove((0,) * self._dims))
 
     def next_gen(self) -> 'PocketDimension':
         candidates = set()

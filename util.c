@@ -1,13 +1,13 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-struct array_with_length {
+struct long_array {
     long* data;
     size_t len;
 };
 
-struct array_with_length* read_input(const char* file_name, const size_t input_len) {
-    struct array_with_length* res;
+struct long_array* read_input_long_array(const char* file_name, const size_t input_len) {
+    struct long_array* res;
 
     FILE* fp = fopen(file_name, "r");
     if (fp == NULL) {
@@ -26,8 +26,7 @@ struct array_with_length* read_input(const char* file_name, const size_t input_l
     }
     fclose(fp);
 
-
-    res = malloc(sizeof(struct array_with_length));
+    res = malloc(sizeof(struct long_array));
     res->data = data;
     res->len = len;
     return res;
